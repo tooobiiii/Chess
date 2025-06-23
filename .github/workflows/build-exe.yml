@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - recode
-  pull_request:
 
 jobs:
   build:
-    runs-on: windows-latest
+    name: Build and Upload Exe
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -22,11 +22,19 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
 
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4.0.2 # https://github.com/actions/cache/releases
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build JAR and EXE with Gradle
         run: ./gradlew build createExe
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: ChessApp-exe
+          name: ChessApp
           path: build/launch4j/*.exe
