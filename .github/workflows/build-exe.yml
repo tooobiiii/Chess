@@ -29,4 +29,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ChessApp-exe
-          path: launch4j/*.exe
+          path: build/launch4j/*.exe
