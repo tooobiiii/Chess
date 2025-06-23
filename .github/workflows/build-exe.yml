@@ -22,20 +22,11 @@ jobs:
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
 
-      - name: Build JAR
-        run: ./gradlew build
-
-      - name: Download and set up Launch4j
-        run: |
-          choco install launch4j
-          mkdir dist
-
-      - name: Create EXE with Launch4j
-        run: |
-          & 'C:\ProgramData\chocolatey\lib\launch4j\tools\launch4j.exe' --outfile dist/ChessApp.exe --jar build/libs/your-app.jar --chdir . --headerType gui
+      - name: Build JAR and EXE with Gradle
+        run: ./gradlew build launch4j
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: ChessApp-exe
-          path: dist/ChessApp.exe
+          path: ChessApp.exe
