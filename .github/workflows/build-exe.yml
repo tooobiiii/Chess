@@ -2,7 +2,8 @@ name: Build EXE
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - recode
   pull_request:
 
 jobs:
