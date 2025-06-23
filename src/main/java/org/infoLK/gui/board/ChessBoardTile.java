@@ -1,4 +1,4 @@
 package org.infoLK.gui.board;
 
-public class Tile {
+public class ChessBoardTile {
 }
