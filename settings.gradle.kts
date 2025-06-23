@@ -1,2 +1,1 @@
-rootProject.name = "Schach"
-
+rootProject.name = "Chess"
