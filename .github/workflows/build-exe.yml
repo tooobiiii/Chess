@@ -23,7 +23,7 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Build JAR and EXE with Gradle
-        run: ./gradlew build launch4j
+        run: ./gradlew build createExe
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
