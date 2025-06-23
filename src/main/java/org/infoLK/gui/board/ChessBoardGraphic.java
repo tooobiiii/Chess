@@ -5,11 +5,9 @@ import java.awt.*;
 
 public class ChessBoardGraphic extends JFrame {
 
-	private static final int TileSize = 100;
-
 	public ChessBoardGraphic(int rows, int columns) {
 		super("InfoLK - Chess");
-		setSize(new Dimension(TileSize * rows, TileSize * columns));
+		setSize(new Dimension(ChessBoardTile.Size * rows, ChessBoardTile.Size * columns));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		setLocationRelativeTo(null);

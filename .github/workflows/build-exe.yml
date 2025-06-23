@@ -1,0 +1,40 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Build JAR
+        run: ./gradlew build
+
+      - name: Download and set up Launch4j
+        run: |
+          choco install launch4j
+          mkdir dist
+
+      - name: Create EXE with Launch4j
+        run: |
+          launch4j --outfile dist/ChessApp.exe --jar build/libs/your-app.jar --chdir . --headerType gui
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: ChessApp-exe
+          path: dist/ChessApp.exe
