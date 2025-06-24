@@ -1,8 +1,10 @@
 package org.infoLK.constants;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum FigureType {
 
 	PAWN("♙"),
@@ -13,8 +15,4 @@ public enum FigureType {
 	KING("♔");
 
 	private final String symbol;
-
-	FigureType(String symbol) {
-		this.symbol = symbol;
-	}
 }
