@@ -3,17 +3,18 @@ package org.infoLK.gui.board.graphic;
 import org.infoLK.constants.Constants;
 import org.infoLK.figure.AChessFigure;
 import org.infoLK.gui.board.ChessBoardTile;
+import org.infoLK.gui.board.graphic.handler.ChessBoardTileListener;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChessBoardTileGraphic extends JPanel {
 
 	private final ChessBoardTile tile;
-	private static final Set<ChessBoardTile> Highlighted = Collections.synchronizedSet(new HashSet<>());
+	private static final Map<ChessBoardTile, Color> Highlighted = Collections.synchronizedMap(new HashMap<>());
 
 	public ChessBoardTileGraphic(ChessBoardTile tile, JPanel panel) {
 		this.tile = tile;
@@ -28,8 +29,8 @@ public class ChessBoardTileGraphic extends JPanel {
 		paintTileBackground(g);
 		paintFigure(g);
 
-		if (Highlighted.contains(tile)) {
-			g.setColor(Color.getHSBColor(0.6f, 0.5f, 0.9f));
+		if (Highlighted.containsKey(tile)) {
+			g.setColor(Highlighted.get(tile));
 			((Graphics2D) g).setStroke(new BasicStroke(7));
 			g.drawRect(0, 0, getWidth(), getHeight());
 		}
@@ -57,8 +58,9 @@ public class ChessBoardTileGraphic extends JPanel {
 		}
 	}
 
-	public void addHighlight() {
-		Highlighted.add(tile);
+	public void addHighlight(Color color) {
+		Highlighted.put(tile, color);
+		ChessBoardTileListener.getMarkedTiles().add(this);
 		repaint();
 	}
 

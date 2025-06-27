@@ -1,8 +1,12 @@
 package org.infoLK.gui.board.graphic.handler;
 
+import lombok.Getter;
+import org.infoLK.figure.AChessFigure;
 import org.infoLK.game.PlayerTeam;
 import org.infoLK.gui.board.ChessBoardTile;
+import org.infoLK.gui.board.graphic.ChessBoardTileGraphic;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -11,9 +15,12 @@ import java.util.Set;
 
 public class ChessBoardTileListener implements MouseListener, MouseMotionListener {
 
+	@Getter
+	private final static Set<ChessBoardTileGraphic> markedTiles = new HashSet<>();
+	private static final Color SELCTION_COLOR = Color.getHSBColor(0.6f, 0.5f, 0.9f);
+	private static final Color SUGGESTION_COLOR = Color.getHSBColor(0.33f, 0.3f, 0.85f);
 	private static ChessBoardTile selectedTile = null;
 	private final ChessBoardTile tile;
-	private static Set<ChessBoardTile> suggestedMoves = new HashSet<>();
 
 	public ChessBoardTileListener(ChessBoardTile tile) {
 		this.tile = tile;
@@ -34,42 +41,15 @@ public class ChessBoardTileListener implements MouseListener, MouseMotionListene
 	 *
 	 * @param e the event to be processed
 	 */
-	@Override
 	public void mousePressed(MouseEvent e) {
-//		if (selectedTile != null)
-//			selectedTile.getGraphic().removeHighlight();
-//
-//		if (tile.occupiedByTeam() != PlayerTeam.getCurrentTurn() && !selectedTile.isOccupied())
-//			return;
-//
-//		if (handleTryMove()) return;
-//
-//		tile.getGraphic().addHighlight();
-//
-//		selectedTile = tile;
-//		suggestedMoves = suggestMoves();
-
-		if (selectedTile == null) {
-			if (tile.occupiedByTeam() != PlayerTeam.getCurrentTurn())
-				return;
-			tile.getGraphic().addHighlight();
-			selectedTile = tile;
-			suggestedMoves = selectedTile.getFigure().suggestMoves();
-		} else {
+		if (selectedTile == null)
+			handleSelection();
+		else {
 			if (tile.occupiedByTeam() == PlayerTeam.getCurrentTurn()) {
-				selectedTile.getGraphic().removeHighlight();
-				tile.getGraphic().addHighlight();
-				selectedTile = tile;
-				suggestedMoves = selectedTile.getFigure().suggestMoves();
-				return;
-			}
-
-			if (suggestedMoves.isEmpty() || !suggestedMoves.contains(tile)) {
-				System.out.println("Der move war laut Berechnung illegal!");
-			}
-			selectedTile.getFigure().moveFigure(tile);
-			selectedTile.getGraphic().removeHighlight();
-			selectedTile = null;
+				clearMarkedTiles();
+				handleSelection();
+			} else
+				handleMove();
 		}
 	}
 
@@ -132,15 +112,32 @@ public class ChessBoardTileListener implements MouseListener, MouseMotionListene
 
 	}
 
-	private boolean handleTryMove() {
-		if (selectedTile == null || (!selectedTile.isOccupied() || selectedTile.getFigure().getTeam() != PlayerTeam.getCurrentTurn()))
-			return false;
-		if (!tile.isOccupied()) {
-			selectedTile.getFigure().moveFigure(tile);
-			PlayerTeam.switchTurn();
-			return true;
-		}
+	private void handleSelection() {
+		if (tile.occupiedByTeam() != PlayerTeam.getCurrentTurn())
+			return;
+		tile.getGraphic().addHighlight(SELCTION_COLOR);
+		markSuggestedTiles(tile.getFigure().suggestMoves());
+		selectedTile = tile;
+	}
 
-		return false;
+	private void handleMove() {
+		AChessFigure figure = selectedTile.getFigure();
+		if (!figure.getSuggestedMoves().contains(tile))
+			return;
+		figure.moveFigure(tile);
+		clearMarkedTiles();
+		selectedTile = null;
+	}
+
+	private void markSuggestedTiles(Set<ChessBoardTile> suggestedMoves) {
+		if (suggestedMoves.isEmpty())
+			return;
+		for (ChessBoardTile tile : suggestedMoves)
+			tile.getGraphic().addHighlight(SUGGESTION_COLOR);
+	}
+
+	private void clearMarkedTiles() {
+		markedTiles.iterator().forEachRemaining(ChessBoardTileGraphic :: removeHighlight);
+		markedTiles.clear();
 	}
 }
