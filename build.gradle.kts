@@ -1,22 +1,13 @@
-plugins {
-    id("java")
-    id("edu.sc.seis.launch4j") version "3.0.5"
+allprojects {
+    group = "me.tooobiiii"
+    version = "0.0.1-SNAPSHOT"
 }
 
-group = "org.infoLK"
-version = "1.0-SNAPSHOT"
-val appMain = "org.infoLK.Main"
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "java-library")
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
-}
-
-launch4j {
-    mainClassName = appMain
-    outfile = "ChessApp.exe"
+    repositories {
+        mavenCentral()
+    }
 }
