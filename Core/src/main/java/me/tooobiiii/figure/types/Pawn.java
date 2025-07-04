@@ -6,49 +6,50 @@ import me.tooobiiii.game.PlayerTeam;
 import me.tooobiiii.gui.board.ChessBoard;
 import me.tooobiiii.gui.board.ChessBoardTile;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public final class Pawn extends AChessFigure {
 
 	private boolean hasMoved = false;
 
-	public Pawn(ChessBoardTile tile, PlayerTeam team) {
-		super(tile, team);
+	public Pawn(ChessBoard board, ChessBoardTile tile, PlayerTeam team) {
+		super(board, tile, team);
 		this.type = FigureType.PAWN;
 	}
 
 	@Override
 	public Set<ChessBoardTile> suggestMoves() {
-		suggestedMoves.clear();
-		int direction = team == PlayerTeam.WHITE ? -1 : 1; // White moves up (-1), Black moves down (+1)
+		Set<ChessBoardTile> moves = new HashSet<>();
+		int direction = team == PlayerTeam.WHITE ? -1 : 1; // White moves up, Black down
 		int currentRow = tile.getRow();
 		int currentCol = tile.getColumn();
 
 		// Forward move
-		ChessBoardTile forwardTile = ChessBoard.getTileAt(currentRow + direction, currentCol);
+		ChessBoardTile forwardTile = board.getTileAt(currentRow + direction, currentCol);
 		if (forwardTile != null && !forwardTile.isOccupied()) {
-			suggestedMoves.add(forwardTile);
+			moves.add(forwardTile);
 
-			// Double move on first move
+			// Double step if not moved
 			if (!hasMoved) {
-				ChessBoardTile doubleForwardTile = ChessBoard.getTileAt(currentRow + 2 * direction, currentCol);
+				ChessBoardTile doubleForwardTile = board.getTileAt(currentRow + 2 * direction, currentCol);
 				if (doubleForwardTile != null && !doubleForwardTile.isOccupied()) {
-					suggestedMoves.add(doubleForwardTile);
+					moves.add(doubleForwardTile);
 				}
 			}
 		}
 
 		// Diagonal captures
-		ChessBoardTile leftDiagonal = ChessBoard.getTileAt(currentRow + direction, currentCol - 1);
-		ChessBoardTile rightDiagonal = ChessBoard.getTileAt(currentRow + direction, currentCol + 1);
+		ChessBoardTile leftDiagonal = board.getTileAt(currentRow + direction, currentCol - 1);
+		ChessBoardTile rightDiagonal = board.getTileAt(currentRow + direction, currentCol + 1);
 
 		if (leftDiagonal != null && leftDiagonal.isOccupiedByOpponent(this)) {
-			suggestedMoves.add(leftDiagonal);
+			moves.add(leftDiagonal);
 		}
 		if (rightDiagonal != null && rightDiagonal.isOccupiedByOpponent(this)) {
-			suggestedMoves.add(rightDiagonal);
+			moves.add(rightDiagonal);
 		}
-		return suggestedMoves;
+		return moves;
 	}
 
 	@Override

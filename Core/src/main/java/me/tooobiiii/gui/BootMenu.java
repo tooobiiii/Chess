@@ -22,7 +22,6 @@ public final class BootMenu extends JFrame {
 
 		panel.add(createButton("Start", (ActionEvent e) -> {
 			dispose();
-			new ChessBoard();
 		}));
 
 		panel.add(createButton("Exit", (ActionEvent e) -> dispose()));

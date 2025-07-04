@@ -14,7 +14,8 @@ import java.util.Map;
 public class ChessBoardTileGraphic extends JPanel {
 
 	private final ChessBoardTile tile;
-	private static final Map<ChessBoardTile, Color> Highlighted = Collections.synchronizedMap(new HashMap<>());
+	// Renamed for style
+	private static final Map<ChessBoardTile, Color> highlightedTiles = Collections.synchronizedMap(new HashMap<>());
 
 	public ChessBoardTileGraphic(ChessBoardTile tile, JPanel panel) {
 		this.tile = tile;
@@ -29,15 +30,14 @@ public class ChessBoardTileGraphic extends JPanel {
 		paintTileBackground(g);
 		paintFigure(g);
 
-		if (Highlighted.containsKey(tile)) {
-			g.setColor(Highlighted.get(tile));
+		if (highlightedTiles.containsKey(tile)) {
+			g.setColor(highlightedTiles.get(tile));
 			((Graphics2D) g).setStroke(new BasicStroke(7));
 			g.drawRect(0, 0, getWidth(), getHeight());
 		}
 	}
 
-	private void paintTileBackground(Graphics g)
-	{
+	private void paintTileBackground(Graphics g) {
 		int row = tile.getRow();
 		int col = tile.getColumn();
 		boolean isLight = (row + col) % 2 == 0;
@@ -59,13 +59,18 @@ public class ChessBoardTileGraphic extends JPanel {
 	}
 
 	public void addHighlight(Color color) {
-		Highlighted.put(tile, color);
+		highlightedTiles.put(tile, color);
 		ChessBoardTileListener.getMarkedTiles().add(this);
 		repaint();
 	}
 
 	public void removeHighlight() {
-		Highlighted.remove(tile);
+		highlightedTiles.remove(tile);
 		repaint();
+	}
+
+	// Optional
+	public boolean isHighlighted() {
+		return highlightedTiles.containsKey(tile);
 	}
 }

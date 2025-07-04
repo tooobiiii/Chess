@@ -14,7 +14,7 @@ public class ChessBoardGraphic extends JFrame {
 	private static final int OFFSET = 50;
 
 	private final JPanel panel;
-	private final JLabel turnLabel = new JLabel("Current Turn: " + PlayerTeam.getCurrentTurn(), JLabel.CENTER);
+	private final JLabel turnLabel = new JLabel("Current Turn: ", JLabel.CENTER);
 
 	public ChessBoardGraphic(int rows, int columns) {
 		super("InfoLK - Chess");
@@ -57,7 +57,21 @@ public class ChessBoardGraphic extends JFrame {
 		return panel;
 	}
 
-	public void updateTurnLabel() {
-		turnLabel.setText("Current Turn: " + PlayerTeam.getCurrentTurn());
+	// UPDATED: Let anyone set the turn label to anything (not just current turn)
+	public void setTurnLabel(String text) {
+		turnLabel.setText(text);
+	}
+
+	// (Optional) Redraw/refresh board
+	public void refresh() {
+		panel.repaint();
+		turnLabel.repaint();
+	}
+
+	// (Optional) Clear the board
+	public void clearBoard() {
+		panel.removeAll();
+		panel.revalidate();
+		panel.repaint();
 	}
 }
